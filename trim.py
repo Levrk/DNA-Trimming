@@ -2,7 +2,9 @@ from Bio import SeqIO
 
 
 def main (seq):
-    return printInfo(f3(f2(f1(seq))))
+    output = f3(f2(f1(seq)))
+    printInfo(output)
+    return output
 
 
 def printInfo(seq):
