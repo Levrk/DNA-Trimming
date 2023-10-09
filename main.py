@@ -15,11 +15,16 @@ if not (args.input and args.output):
 #set up filenames as variables and initialize count
 fastq_file_in = "input/" + args.input + ".fastq"
 fastq_file_out = "output/" + args.output + ".fastq"
+reads = []
+#count in place while we work on efficiency
 count = 0
 
-
+#iterate through each line of the file calling trim.main on each read 
 for read in SeqIO.parse(fastq_file_in, "fastq"):
-    trim.main(read)
+    #append the modified read to the list of reads
+    reads.append(trim.main(read))
     count+=1
     if count > 10 :
         break
+
+SeqIO.write(reads, fastq_file_out, "fastq")
