@@ -3,7 +3,7 @@ from Bio import SeqIO
 
 def main (seq):
     output = f3(f2(f1(seq)))
-    printInfo(output)
+    #printInfo(output)
     return output
 
 

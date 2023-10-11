@@ -1,5 +1,6 @@
 from Bio import SeqIO
 import trim
+import time
 import argparse
 
 #set up parser
@@ -19,12 +20,22 @@ reads = []
 #count in place while we work on efficiency
 count = 0
 
+#set up time
+startTime = time.time()
+
 #iterate through each line of the file calling trim.main on each read 
 for read in SeqIO.parse(fastq_file_in, "fastq"):
     #append the modified read to the list of reads
     reads.append(trim.main(read))
     count+=1
-    if count > 10 :
-        break
+    #if count > 10 :
+        #break
 
+
+#write to output .fastq file
 SeqIO.write(reads, fastq_file_out, "fastq")
+
+#calculate total time
+endTime = time.time()
+totalTime = endTime - startTime
+print("Total execution time for " + str(count) + " reads: " + str(totalTime) + " seconds")
