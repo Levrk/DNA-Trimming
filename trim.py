@@ -1,11 +1,9 @@
 from Bio import SeqIO
 
-
 def main (seq):
-    output = f3(f2(f1(seq)))
+    output = slidingWindow(trim_n(count_n(trailing(leading(seq)))))
     #printInfo(output)
     return output
-
 
 def printInfo(seq):
     print("\n")
@@ -16,16 +14,22 @@ def printInfo(seq):
     return seq
 
 
-def f1 (seq):
+def slidingWindow (seq):
     #modify seq
     return seq
 
-
-def f2 (seq):
+def leading (seq):
     #modify seq
     return seq
 
+def trailing (seq):
+    #modify seq
+    return seq
 
-def f3 (seq):
+def count_n (seq):
+    #modify seq
+    return seq
+
+def trim_n (seq):
     #modify seq
     return seq
