@@ -1,4 +1,5 @@
 from Bio import SeqIO
+from Bio.Seq import Seq
 
 def main (seq, count, width, threshold):
     output = leading(seq, threshold)
@@ -21,8 +22,25 @@ def slidingWindow (seq, width, threshold):
     #modify seq
     return seq
 
-def leading (seq, threshold):
-    print(threshold)
+def leading(seq, threshold):
+    printInfo(seq)
+    qualityScores = seq.letter_annotations['phred_quality']
+    sequence = seq.seq
+
+    # Create a copy of the qualityScores list
+    qualityScores_copy = qualityScores.copy()
+
+    count = 0
+    for i in qualityScores:
+        if i >= threshold:
+            # Clear the letter_annotations before updating the sequence
+            seq.letter_annotations = {}
+            seq.seq = sequence[count:]
+            seq.letter_annotations['phred_quality'] = qualityScores_copy[count:]
+            break
+        count += 1
+
+    # Return the modified seq
     return seq
 
 def trailing (seq, threshold):
