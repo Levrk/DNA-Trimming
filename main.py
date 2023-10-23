@@ -27,10 +27,9 @@ startTime = time.time()
 #iterate through each line of the file calling trim.main on each read 
 for read in SeqIO.parse(fastq_file_in, "fastq"):
     #append the modified read to the list of reads
-    reads.append(trim.main(read))
+    reads.append(trim.main(read, 1, 3, 35)) #need to update these defaults to make them args
     count+=1
-    if count > 10 :
-        break
+    break
 
 
 #write to output .fastq file
