@@ -1,4 +1,5 @@
 from Bio import SeqIO
+from Bio.Seq import Seq
 
 def main (seq, count, width, threshold):
     output = leading(seq, threshold)
@@ -36,7 +37,29 @@ def count_n (seq, count):
     return seq
 
 def trim_n (seq):
-    #modify seq
+    printInfo(seq)
+    qualityScores = seq.letter_annotations['phred_quality']
+    sequence = seq.seq
+    
+    # Create a copy of qualityScores list 
+    qualityScores_copy = qualityScores.copy()
+    
+    for i in range(len(sequence)):
+        if sequence[i] == "N": 
+            # clear letter_annotations first
+            seq.letter_annotations = {}
+            seq.seq = sequence[1::]
+            seq.letter_annotations['phred_quality'] = qualityScores_copy[1::]
+        else:
+            break
+    
+    for j in range(len(sequence)):
+        if sequence[-j-1] == "N":
+            seq.seq = sequence[0:-1]
+            seq.letter_annotations['phred_quality'] = qualityScores_copy[0:-1]
+        else:
+            break
+    # Return modified seq 
     return seq
 
 def quality(char):
