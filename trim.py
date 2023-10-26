@@ -23,7 +23,6 @@ def slidingWindow (seq, width, threshold):
     return seq
 
 def leading(seq, threshold):
-    printInfo(seq)
     qualityScores = seq.letter_annotations['phred_quality']
     sequence = seq.seq
 
@@ -43,9 +42,24 @@ def leading(seq, threshold):
     # Return the modified seq
     return seq
 
-def trailing (seq, threshold):
-    #modify seq
-    print(threshold)
+def trailing(seq, threshold):
+    qualityScores = seq.letter_annotations['phred_quality']
+    sequence = seq.seq
+
+    # Create a copy of the qualityScores list
+    qualityScores_copy = qualityScores.copy()
+
+    count = len(qualityScores) - 1  # Start from the end of the list
+    while count >= 0:
+        if qualityScores[count] >= threshold:
+            # Clear the letter_annotations before updating the sequence
+            seq.letter_annotations = {}
+            seq.seq = sequence[:count + 1]  # Include the found quality score
+            seq.letter_annotations['phred_quality'] = qualityScores_copy[:count + 1]
+            break
+        count -= 1
+
+    # Return the modified seq
     return seq
 
 def count_n (seq, count):
