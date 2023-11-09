@@ -6,8 +6,8 @@ def main (seq, count, width, threshold):
     output = trailing(output,threshold)
     output = count_n(output,count)
     output = trim_n(output)
-    output = slidingWindow(output, width, threshold)
-    printInfo(output)
+    output = slidingWindow(seq, width, threshold)
+    #printInfo(output)
     return output
 
 def printInfo(seq):
@@ -23,6 +23,25 @@ def slidingWindow (seq, width, threshold):
     # of [width] bases and calculates their average quality score. 
     # Once the average quality score drops below a certain threshold indicated 
     # by [threshold] the function cuts off the remaining bases in the sequence. 
+
+    qualityScores = seq.letter_annotations['phred_quality']
+    sequence = seq.seq
+
+    count = 0
+
+    # Create a copy of the qualityScores list
+    qualityScores_copy = qualityScores.copy()
+    for i in range(len(qualityScores)):
+        #determine window & window avg
+        window = qualityScores[i:i+width]
+        windowAVG = sum(window)/len(window)
+        if (windowAVG < threshold):
+            #rewrite sequence based on cutoff
+            seq.letter_annotations = {}
+            seq.seq = sequence[:count]
+            seq.letter_annotations['phred_quality'] = qualityScores_copy[:count]
+            break
+        count+=1
     return seq
 
 def leading(seq, threshold):
@@ -89,7 +108,6 @@ def count_n (seq, count):
 
 def trim_n (seq):
     #trim_n trims all N’s off of the beginning and end of the sequence until a non N base is hit on both sides
-    printInfo(seq)
     qualityScores = seq.letter_annotations['phred_quality']
     sequence = seq.seq
     
