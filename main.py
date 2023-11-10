@@ -1,4 +1,5 @@
 from Bio import SeqIO
+import sys
 import trim
 import time
 import argparse
@@ -27,7 +28,7 @@ threshold = args.threshold
 if (args.cutoff):
     cutoff = args.cutoff
 else:
-    cutoff = 10
+    cutoff = sys.maxsize
 
 reads = []
 
