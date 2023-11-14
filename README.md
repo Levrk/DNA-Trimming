@@ -4,9 +4,9 @@
 
 Main.py iterates through each read within a .fastq file calling functions from trim.py on each and then appending the modified read to a list. After iteration is completed, the program will then write the entire list of DNA reads to a new .fastq file
 
-This program is executed from the command line with 2 argumets specifying the names of the .fastq files that will be processed from the input folder and written to the output folder. Here is the for calling main.py:
+This program is executed from the command line with 9 arguments specifying the names of the .fastq files that will be processed from the input folder and written to the output folder, the parameters for the trimming functions, the order for trimming functions to be applied, and the number of reads to be processed. The final argument is optional and the program will process the entire input file if no cutoff is provided. Here is an example of how you might call main.py from the command line:
 
-> python3 main.py --input inputFileName --output outputFileName
+> main.py --input sample --output test1 --count 3 --width 5 --thresholdL 8  --thresholdT 8  --thresholdS 4 --order leading+trailing+count+trim+sliding --cutoff 100
 
 
 ## trim.py
