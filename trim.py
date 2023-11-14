@@ -1,5 +1,6 @@
 from Bio import SeqIO
 from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 
 def main (seq, count, width, threshold):
     output = leading(seq, threshold)
@@ -109,15 +110,18 @@ def trailing(seq, threshold):
     return seq
 
 def count_n_helper (seq, count, currCount, index):
-    if (seq.seq == ""):
-            return seq
-
-    if currCount > count: 
-        seq.letter_annotations = {}
-        seq.seq = ""
-        return seq
+    # if (seq.seq == ""):
+    #         return seq
     if index == -1:
         return seq
+    if currCount > count: 
+        # seq.letter_annotations = {}
+        # seq.seq = ""
+
+        empty = Seq("")
+        empty_record = SeqRecord(empty)
+        empty_record.letter_annotations["phred_quality"] = []
+        return empty_record
     if seq.seq[index] == "N":
         return count_n_helper(seq, count, currCount + 1, index - 1)
     else:
