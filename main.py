@@ -24,7 +24,7 @@ if not (args.input and args.output and args.count and args.width and args.thresh
 #set up filenames as variables and initialize count
 fastq_file_in = "input/" + args.input + ".fastq"
 fastq_file_out = "output/" + args.output + ".fastq"
-count = args.count
+countN = args.count
 width = args.width
 thresholdLeading = args.thresholdL
 thresholdTrailing = args.thresholdT
@@ -47,7 +47,7 @@ startTime = time.time()
 #iterate through each line of the file calling trim.main on each read 
 for read in SeqIO.parse(fastq_file_in, "fastq"):
     #append the modified read to the list of reads
-    newRead = trim.main(read, count, width, thresholdLeading, thresholdTrailing, thresholdSliding, order) #need to update these defaults to make them args
+    newRead = trim.main(read, countN, width, thresholdLeading, thresholdTrailing, thresholdSliding, order) #need to update these defaults to make them args
     if (newRead.seq != ""):
         reads.append(newRead)
     count+=1
