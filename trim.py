@@ -123,26 +123,31 @@ def trim_n (seq):
     
     qualityScores = seq.letter_annotations['phred_quality']
     sequence = seq.seq
-    
+    length = len(sequence)
+    start=0
+    end = 0
+
     # Create a copy of qualityScores list 
     qualityScores_copy = qualityScores.copy()
-    
+
     for i in range(len(sequence)):
         if sequence[i] == "N": 
             # clear letter_annotations first
-            seq.letter_annotations = {}
-            seq.seq = sequence[1::]
-            seq.letter_annotations['phred_quality'] = qualityScores_copy[1::]
+            start+=1
         else:
             break
-    
     for j in range(len(sequence)):
         if sequence[-j-1] == "N":
-            seq.seq = sequence[0:-1]
-            seq.letter_annotations['phred_quality'] = qualityScores_copy[0:-1]
+            end+=1
         else:
             break
+
+    seq.letter_annotations = {}
+    seq.seq = sequence[start:length-end]
+    seq.letter_annotations['phred_quality'] = qualityScores_copy[start:length-end]
     # Return modified seq 
+    
+    
     return seq
 
 
@@ -155,7 +160,6 @@ def slidingWindow (seq, width, threshold):
     #Stop right here if the sequence is empty
     if (seq.seq == ""):
         return seq
-
     qualityScores = seq.letter_annotations['phred_quality']
     sequence = seq.seq
 
