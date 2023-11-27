@@ -47,7 +47,9 @@ startTime = time.time()
 #iterate through each line of the file calling trim.main on each read 
 for read in SeqIO.parse(fastq_file_in, "fastq"):
     #append the modified read to the list of reads
-    reads.append(trim.main(read, count, width, thresholdLeading, thresholdTrailing, thresholdSliding, order)) #need to update these defaults to make them args
+    newRead = trim.main(read, count, width, thresholdLeading, thresholdTrailing, thresholdSliding, order) #need to update these defaults to make them args
+    if (newRead.seq != ""):
+        reads.append(newRead)
     count+=1
     if (count >= cutoff):
         break
