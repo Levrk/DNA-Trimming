@@ -43,14 +43,18 @@ count = 0
 
 #set up time
 startTime = time.time()
+print("\nInitiating Sequence Trimming on ", fastq_file_in, "\n")
 
 #iterate through each line of the file calling trim.main on each read 
 for read in SeqIO.parse(fastq_file_in, "fastq"):
+    
     #append the modified read to the list of reads
     newRead = trim.main(read, countN, width, thresholdLeading, thresholdTrailing, thresholdSliding, order) #need to update these defaults to make them args
     if (newRead.seq != ""):
         reads.append(newRead)
     count+=1
+    if (count%500 == 0):
+        print(count, "/???")
     if (count >= cutoff):
         break
 
@@ -61,4 +65,4 @@ SeqIO.write(reads, fastq_file_out, "fastq")
 #calculate total time
 endTime = time.time()
 totalTime = endTime - startTime
-print("Total execution time for " + str(count) + " reads: " + str(totalTime) + " seconds")
+print("\nTotal execution time for " + str(count) + " reads: " + str(totalTime) + " seconds")
