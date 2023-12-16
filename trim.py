@@ -17,6 +17,8 @@ def main (seq, count, width, thresholdLeading, thresholdTrailing, thresholdSlidi
             output = trim_n(output)
         elif (i == "sliding"):
             output = slidingWindow(seq, width, thresholdSliding)
+        elif (i == "combineTL"):
+            output = combineTL(seq,thresholdLeading)
     return output
 
 def printInfo(seq):
@@ -87,67 +89,61 @@ def trailing(seq, threshold):
     # Return the modified seq
     return seq
 
-def count_n_helper (seq, count, currCount, index):
-    
-    if index == -1:
-        return seq
-    if currCount > count: 
-        # seq.letter_annotations = {}
-        # seq.seq = ""
-
-        empty = Seq("")
-        empty_record = SeqRecord(empty)
-        empty_record.letter_annotations["phred_quality"] = []
-        return empty_record
-    if seq.seq[index] == "N":
-        return count_n_helper(seq, count, currCount + 1, index - 1)
-    else:
-        return count_n_helper(seq, count, currCount, index - 1)
-
-
-def count_n (seq, count):
-    #count_n cuts the entire sequence if it contains more than [count] n’s 
-
-    #Stop right here if the sequence is empty
-    if (seq.seq == ""):
-        return seq
-
-    return count_n_helper (seq, count, 0, len(seq.seq) - 1)   
-
-def trim_n (seq):
-    #trim_n trims all N’s off of the beginning and end of the sequence until a non N base is hit on both sides
-
+def combineTL(seq, threshold):
     #Stop right here if the sequence is empty
     if (seq.seq == ""):
         return seq
     
     qualityScores = seq.letter_annotations['phred_quality']
     sequence = seq.seq
-    length = len(sequence)
-    start=0
-    end = 0
 
-    # Create a copy of qualityScores list 
+    # Create a copy of the qualityScores list
     qualityScores_copy = qualityScores.copy()
 
-    for i in range(len(sequence)):
-        if sequence[i] == "N": 
-            # clear letter_annotations first
-            start+=1
-        else:
+    trailingThres = False
+    leadingThres = False
+    
+    thresholdTIndex = 0
+    thresholdLIndex = 0
+    
+    for i in range(len(qualityScores)):
+        if trailingThres and leadingThres:
+            seq.letter_annotations = {}
+            seq.seq = sequence[thresholdLIndex:thresholdTIndex + 1]  # Include the found quality score
+            seq.letter_annotations['phred_quality'] = qualityScores_copy[thresholdLIndex:thresholdTIndex + 1]
             break
-    for j in range(len(sequence)):
-        if sequence[-j-1] == "N":
-            end+=1
-        else:
-            break
+        else: 
+            if qualityScores[i] >= threshold:
+                leadingThres = True
+                thresholdLIndex = i
+            if qualityScores[-1 - i] >= threshold:
+                trailingThres = True
+                thresholdTIndex = -1 - i
+        
+    # Return the modified seq
+    return seq
 
-    seq.letter_annotations = {}
-    seq.seq = sequence[start:length-end]
-    seq.letter_annotations['phred_quality'] = qualityScores_copy[start:length-end]
-    # Return modified seq 
+def count_n (seq, count):
+    #count_n cuts the entire sequence if it contains more than [count] n’s 
+   
+    currCount = 0
     
+    #Stop right here if the sequence is empty
+    if (seq.seq == ""):
+        return seq
     
+    for i in range(len(seq.seq)):
+        #print(i + currCount)
+        if currCount > count:
+            #print("Threshold Reached: " + i) 
+            empty = Seq("")
+            empty_record = SeqRecord(empty)
+            empty_record.letter_annotations["phred_quality"] = []
+            return empty_record
+        if seq.seq[i] == "N":
+            #print("N Found")
+            currCount += 1
+    #print("Sequence Returned: ")        
     return seq
 
 
